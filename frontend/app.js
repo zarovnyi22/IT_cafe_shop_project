@@ -28,6 +28,7 @@ const adminPanel = document.getElementById('admin-panel');
 const userInfo = document.getElementById('user-info');
 const logoutBtn = document.getElementById('logout');
 const showLoginBtn = document.getElementById('show-login');
+const jumpRegisterBtn = document.getElementById('jump-register');
 const categoryFilter = document.getElementById('category-filter');
 const productList = document.getElementById('product-list');
 const cartItems = document.getElementById('cart-items');
@@ -64,6 +65,7 @@ loginForm.addEventListener('submit', async (e) => {
 
 showLoginBtn.addEventListener('click', () => {
   loginSection.classList.remove('hidden');
+  loginSection.scrollIntoView({ behavior: 'smooth' });
 });
 
 logoutBtn.addEventListener('click', () => {
@@ -77,15 +79,26 @@ logoutBtn.addEventListener('click', () => {
   updateHeader();
 });
 
+jumpRegisterBtn.addEventListener('click', () => {
+  adminPanel.classList.remove('hidden');
+  document.getElementById('employee-form').scrollIntoView({ behavior: 'smooth' });
+});
+
 function updateHeader() {
   if (state.user) {
     userInfo.textContent = `${state.user.name} (${state.user.role})`;
     logoutBtn.classList.remove('hidden');
     showLoginBtn.classList.add('hidden');
+    if (state.user.role === 'Admin') {
+      jumpRegisterBtn.classList.remove('hidden');
+    } else {
+      jumpRegisterBtn.classList.add('hidden');
+    }
   } else {
     userInfo.textContent = '';
     logoutBtn.classList.add('hidden');
     showLoginBtn.classList.remove('hidden');
+    jumpRegisterBtn.classList.add('hidden');
   }
 }
 

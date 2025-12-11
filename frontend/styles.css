@@ -1,0 +1,24 @@
+* { box-sizing: border-box; }
+body { font-family: Arial, sans-serif; margin: 0; background: #f6f7fb; color: #222; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: #2b2d42; color: #fff; }
+.app { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+section { background: #fff; padding: 1rem 1.5rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.hidden { display: none; }
+form { display: grid; gap: 0.5rem; max-width: 400px; }
+input, select, textarea, button { padding: 0.5rem; font-size: 1rem; }
+button { background: #ef233c; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+button:disabled { background: #ccc; cursor: not-allowed; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.8rem; }
+.card { border: 1px solid #ddd; padding: 0.8rem; border-radius: 6px; background: #fafafa; display: flex; flex-direction: column; gap: 0.4rem; }
+.card .price { font-weight: bold; }
+.card .stock { color: #555; font-size: 0.9rem; }
+.cart { margin-top: 1rem; border: 1px dashed #ccc; padding: 0.8rem; border-radius: 6px; background: #fcfcfc; }
+.cart-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+.cart ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.3rem; }
+.table { width: 100%; }
+#inventory-table { width: 100%; border-collapse: collapse; }
+#inventory-table td, #inventory-table th { border: 1px solid #e5e5e5; padding: 0.4rem; }
+#inventory-table .warn { background: #fff4e6; }
+.panel { margin-top: 1rem; padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; }
+.stack input, .stack textarea { width: 100%; }
+.hint { color: #666; font-size: 0.9rem; }

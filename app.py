@@ -445,19 +445,25 @@ class AppHandler(SimpleHTTPRequestHandler):
                 send_json(self, {"error": "Невідома роль"}, HTTPStatus.BAD_REQUEST)
                 return
             conn = get_db()
-            cur = conn.cursor()
-            cur.execute(
-                "INSERT INTO employees (name, role, phone, password_hash, is_active) VALUES (?,?,?,?,1)",
-                (
-                    body['name'],
-                    role,
-                    body['phone'],
-                    hash_password(body['password']),
-                ),
-            )
-            conn.commit()
-            employee_id = cur.lastrowid
-            conn.close()
+            try:
+                cur = conn.cursor()
+                cur.execute(
+                    "INSERT INTO employees (name, role, phone, password_hash, is_active) VALUES (?,?,?,?,1)",
+                    (
+                        body['name'],
+                        role,
+                        body['phone'],
+                        hash_password(body['password']),
+                    ),
+                )
+                conn.commit()
+                employee_id = cur.lastrowid
+            except sqlite3.IntegrityError:
+                conn.rollback()
+                send_json(self, {"error": "Телефон уже використовується"}, HTTPStatus.BAD_REQUEST)
+                return
+            finally:
+                conn.close()
             send_json(self, {"employee_id": employee_id, "role": role})
             return
         if self.path == '/api/ingredients':

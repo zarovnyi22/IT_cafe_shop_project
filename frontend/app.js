@@ -66,6 +66,7 @@ loginForm.addEventListener('submit', async (e) => {
 showLoginBtn.addEventListener('click', () => {
   loginSection.classList.remove('hidden');
   loginSection.scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('phone').focus();
 });
 
 logoutBtn.addEventListener('click', () => {
@@ -75,6 +76,7 @@ logoutBtn.addEventListener('click', () => {
   baristaPanel.classList.add('hidden');
   adminPanel.classList.add('hidden');
   loginSection.classList.remove('hidden');
+  loginForm.reset();
   renderCart();
   updateHeader();
 });

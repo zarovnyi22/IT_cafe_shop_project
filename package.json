@@ -1,0 +1,23 @@
+{
+  "name": "coffee-shop-system",
+  "version": "1.0.0",
+  "description": "POS та складський облік кав'ярні",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node -e \"require('./server/seed').seedDatabase()\"",
+    "frontend": "npm --prefix frontend run dev"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "sequelize": "^6.37.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

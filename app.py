@@ -13,6 +13,12 @@ SECRET_KEY = os.environ.get("APP_SECRET", "super-secret-key")
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
 
 
+def hash_password(password: str) -> str:
+    salt = os.urandom(16)
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 100000)
+    return base64.b64encode(salt + dk).decode()
+
+
 def dict_factory(cursor, row):
     return {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
 
@@ -95,11 +101,6 @@ def ensure_db():
         );
         """
     )
-
-    def hash_password(password: str) -> str:
-        salt = os.urandom(16)
-        dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 100000)
-        return base64.b64encode(salt + dk).decode()
 
     def seed(table, rows):
         placeholders = ",".join(["?" for _ in rows[0]])
@@ -429,6 +430,41 @@ class AppHandler(SimpleHTTPRequestHandler):
             new_id = cur.lastrowid
             conn.close()
             send_json(self, {"product_id": new_id})
+            return
+        if self.path == '/api/employees':
+            if user['role'] != 'Admin':
+                send_json(self, {"error": "Доступ заборонено"}, HTTPStatus.FORBIDDEN)
+                return
+            body = read_json(self)
+            required_fields = ['name', 'phone', 'password']
+            if not all(body.get(f) for f in required_fields):
+                send_json(self, {"error": "Вкажіть ім'я, телефон та пароль"}, HTTPStatus.BAD_REQUEST)
+                return
+            role = body.get('role', 'Barista')
+            if role not in ('Admin', 'Barista'):
+                send_json(self, {"error": "Невідома роль"}, HTTPStatus.BAD_REQUEST)
+                return
+            conn = get_db()
+            try:
+                cur = conn.cursor()
+                cur.execute(
+                    "INSERT INTO employees (name, role, phone, password_hash, is_active) VALUES (?,?,?,?,1)",
+                    (
+                        body['name'],
+                        role,
+                        body['phone'],
+                        hash_password(body['password']),
+                    ),
+                )
+                conn.commit()
+                employee_id = cur.lastrowid
+            except sqlite3.IntegrityError:
+                conn.rollback()
+                send_json(self, {"error": "Телефон уже використовується"}, HTTPStatus.BAD_REQUEST)
+                return
+            finally:
+                conn.close()
+            send_json(self, {"employee_id": employee_id, "role": role})
             return
         if self.path == '/api/ingredients':
             if user['role'] != 'Admin':

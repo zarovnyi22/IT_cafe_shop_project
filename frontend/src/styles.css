@@ -70,11 +70,16 @@ button.secondary {
   flex-wrap: wrap;
 }
 
-input, select {
+input, select, textarea {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #cbd5e1;
   font-size: 14px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 80px;
 }
 
 .section-title {

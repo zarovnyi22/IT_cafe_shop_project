@@ -53,7 +53,8 @@ const Order = sequelize.define('Order', {
   order_date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   total_amount: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
   payment_method: { type: DataTypes.ENUM('Cash', 'Card', 'App'), defaultValue: 'Card' },
-  status: { type: DataTypes.ENUM('Paid', 'Cancelled'), defaultValue: 'Paid' },
+  status: { type: DataTypes.ENUM('Paid', 'Cancelled', 'Completed'), defaultValue: 'Paid' },
+  completed_at: { type: DataTypes.DATE, allowNull: true },
 }, { tableName: 'orders', timestamps: false });
 
 const OrderDetail = sequelize.define('OrderDetail', {

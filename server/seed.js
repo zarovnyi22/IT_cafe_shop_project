@@ -86,7 +86,7 @@ async function seedDatabase() {
     { order_id: order2.order_id, product_id: products[6].product_id, quantity: 1, price_at_sale: 55.0 },
   ]);
 
-  const order3 = await Order.create({ employee_id: barista.employee_id, total_amount: 255.0, payment_method: 'App', status: 'Paid' });
+  const order3 = await Order.create({ employee_id: barista.employee_id, total_amount: 255.0, payment_method: 'App', status: 'Completed', completed_at: new Date() });
   await OrderDetail.bulkCreate([
     { order_id: order3.order_id, product_id: products[2].product_id, quantity: 2, price_at_sale: 60.0 },
     { order_id: order3.order_id, product_id: products[7].product_id, quantity: 1, price_at_sale: 90.0 },

@@ -223,70 +223,97 @@ export default function App() {
   if (!token || !user) {
     return (
       <>
-        <header>
+        <header className="app-header">
           <div className="logo">Coffee POS</div>
-          <nav>
+          <nav className="header-actions">
             <button onClick={handleLogin}>Увійти</button>
           </nav>
         </header>
-        <div className="container">
-          <div className="card" style={{ maxWidth: 420 }}>
-            <h3>Вхід</h3>
-            <div className="flex">
-              <input
-                placeholder="Телефон"
-                value={loginForm.phone}
-                onChange={(e) => setLoginForm({ ...loginForm, phone: e.target.value })}
-              />
-              <input
-                type="password"
-                placeholder="Пароль"
-                value={loginForm.password}
-                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-              />
+        <main className="page">
+          <div className="container auth-layout">
+            <div className="card gradient-card">
+              <p className="eyebrow">Система обліку кав'ярні</p>
+              <h2>Швидкі замовлення та контроль складу</h2>
+              <p>
+                Увійдіть, щоб приймати замовлення, списувати інгредієнти та бачити звіти по продажах
+                для вашої кав'ярні.
+              </p>
+              <ul className="pill-list">
+                <li>Бариста · швидкий POS</li>
+                <li>Адмін · управління меню та персоналом</li>
+                <li>Інвентаризація та рецептури</li>
+              </ul>
             </div>
-            <button onClick={handleLogin}>Увійти</button>
-            {error && <p style={{ color: 'crimson' }}>{error}</p>}
-            <p className="badge">Адмін: +380991234567 / admin123</p>
-            <p className="badge">Бариста: +380997654321 / barista123</p>
+            <div className="card auth-card">
+              <h3>Вхід</h3>
+              <p className="muted">Використайте номер телефону та пароль.</p>
+              <div className="stack">
+                <input
+                  placeholder="Телефон"
+                  value={loginForm.phone}
+                  onChange={(e) => setLoginForm({ ...loginForm, phone: e.target.value })}
+                />
+                <input
+                  type="password"
+                  placeholder="Пароль"
+                  value={loginForm.password}
+                  onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                />
+                <button onClick={handleLogin}>Увійти</button>
+                {error && <p className="error-text">{error}</p>}
+                <div className="hint-box">
+                  <p className="badge">Адмін: +380991234567 / admin123</p>
+                  <p className="badge">Бариста: +380997654321 / barista123</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
   return (
     <>
-      <header>
+      <header className="app-header">
         <div className="logo">Coffee POS · {user.role}</div>
-        <nav>
+        <nav className="header-actions">
           {isAdmin && <button onClick={() => document.getElementById('admin-block')?.scrollIntoView({ behavior: 'smooth' })}>+ Бариста</button>}
           <button className="secondary" onClick={handleLogout}>Вийти</button>
         </nav>
       </header>
       <div className="container">
         <div className="status-bar">
-          <span className="badge">Вітаємо, {user.name}</span>
-          {info && <span className="badge">{info}</span>}
-          {error && <span className="badge low">{error}</span>}
+          <span className="chip">Вітаємо, {user.name}</span>
+          {info && <span className="chip success">{info}</span>}
+          {error && <span className="chip danger">{error}</span>}
         </div>
 
-        <section>
+        <section className="panel">
           <div className="section-title">
-            <h3>Меню</h3>
-            <select value={payment} onChange={(e) => setPayment(e.target.value)}>
-              {paymentOptions.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
+            <div>
+              <p className="eyebrow">Швидке замовлення</p>
+              <h3>Меню</h3>
+            </div>
+            <div className="flex center">
+              <label className="muted">Оплата</label>
+              <select value={payment} onChange={(e) => setPayment(e.target.value)}>
+                {paymentOptions.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="card-grid">
               {products.map((p) => (
-                <div key={p.product_id} className="card">
+                <div key={p.product_id} className="card shadow">
+                  <div className="card-top">
+                    <span className="pill ghost">#{p.product_id}</span>
+                    {!p.is_active && <span className="pill danger">Вимкнено</span>}
+                  </div>
                   <h4>{p.name}</h4>
-                  <p>{p.description}</p>
-                  <strong>{Number(p.price).toFixed(2)} грн</strong>
-                  <div style={{ marginTop: 8 }}>
-                    {!p.is_active && <span className="badge low">Вимкнено</span>}
+                  <p className="muted">{p.description}</p>
+                  <strong className="price-tag">{Number(p.price).toFixed(2)} грн</strong>
+                  <div className="card-actions">
                     <button disabled={!p.is_active} onClick={() => addToCart(p)}>Додати</button>
                   </div>
                 </div>
@@ -294,12 +321,15 @@ export default function App() {
             </div>
           </section>
 
-        <section>
+        <section className="panel">
           <div className="section-title">
-            <h3>Кошик</h3>
+            <div>
+              <p className="eyebrow">Оплата</p>
+              <h3>Кошик</h3>
+            </div>
             <button disabled={!cart.length} onClick={placeOrder}>Оплатити</button>
           </div>
-          {!cart.length && <p>Додайте позиції до замовлення.</p>}
+          {!cart.length && <p className="muted">Додайте позиції до замовлення.</p>}
           {cart.length > 0 && (
             <table className="table">
               <thead>
@@ -322,7 +352,7 @@ export default function App() {
                         style={{ width: 70 }}
                       />
                     </td>
-                    <td>{(Number(item.price) * item.quantity).toFixed(2)} грн</td>
+                    <td><span className="pill ghost">{(Number(item.price) * item.quantity).toFixed(2)} грн</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -330,9 +360,12 @@ export default function App() {
           )}
         </section>
 
-        <section>
+        <section className="panel">
           <div className="section-title">
-            <h3>Склад</h3>
+            <div>
+              <p className="eyebrow">Складський контроль</p>
+              <h3>Склад</h3>
+            </div>
           </div>
           <table className="table">
             <thead>
@@ -349,7 +382,9 @@ export default function App() {
                 <tr key={ing.ingredient_id}>
                   <td>{ing.name}</td>
                   <td>{Number(ing.current_stock).toFixed(2)} {ing.unit}</td>
-                  <td className={ing.low ? 'badge low' : ''}>{Number(ing.warning_threshold).toFixed(2)}</td>
+                  <td>
+                    <span className={ing.low ? 'pill danger' : 'pill ghost'}>{Number(ing.warning_threshold).toFixed(2)}</span>
+                  </td>
                   {isAdmin && (
                     <td>
                       <div className="flex">
@@ -391,11 +426,14 @@ export default function App() {
           </table>
         </section>
 
-        <section>
+        <section className="panel">
           <div className="section-title">
-            <h3>Замовлення</h3>
+            <div>
+              <p className="eyebrow">Черга</p>
+              <h3>Замовлення</h3>
+            </div>
           </div>
-          {!orders.length && <p>Ще немає замовлень.</p>}
+          {!orders.length && <p className="muted">Ще немає замовлень.</p>}
           {orders.length > 0 && (
             <table className="table">
               <thead>
@@ -412,7 +450,7 @@ export default function App() {
                   <tr key={o.order_id}>
                     <td>{o.order_id}</td>
                     <td>{Number(o.total_amount).toFixed(2)}</td>
-                    <td>{o.status}</td>
+                    <td><span className={`pill ${o.status === 'Completed' ? 'success' : 'warning'}`}>{o.status}</span></td>
                     <td>{o.payment_method}</td>
                     <td>
                       {o.status !== 'Completed' && (
@@ -427,12 +465,15 @@ export default function App() {
         </section>
 
         {isAdmin && (
-          <section id="admin-block">
+          <section id="admin-block" className="panel">
             <div className="section-title">
-              <h3>Адмін · Облікові записи</h3>
+              <div>
+                <p className="eyebrow">Команда</p>
+                <h3>Адмін · Облікові записи</h3>
+              </div>
               <button onClick={submitEmployee}>Додати</button>
             </div>
-            <div className="flex">
+            <div className="flex wrap">
               <input placeholder="Ім'я" value={newEmployee.name} onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })} />
               <input placeholder="Телефон" value={newEmployee.phone} onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })} />
               <input placeholder="Пароль" value={newEmployee.password} onChange={(e) => setNewEmployee({ ...newEmployee, password: e.target.value })} />
@@ -459,8 +500,8 @@ export default function App() {
                     <td>{e.name}</td>
                     <td>{e.phone}</td>
                     <td>{e.role}</td>
-                    <td>{e.is_active ? 'Активний' : 'Видалений'}</td>
-                    <td>
+                    <td><span className={`pill ${e.is_active ? 'success' : 'danger'}`}>{e.is_active ? 'Активний' : 'Видалений'}</span></td>
+                    <td className="flex wrap">
                       <button onClick={() => api.updateEmployee(e.employee_id, { is_active: !e.is_active }, token).then(refreshEmployees).catch((err) => setError(err.message))}>{e.is_active ? 'Деактивувати' : 'Відновити'}</button>
                       <button className="secondary" onClick={() => api.deactivateEmployee(e.employee_id, token).then(refreshEmployees).catch((err) => setError(err.message))}>Видалити</button>
                     </td>
@@ -470,10 +511,13 @@ export default function App() {
             </table>
 
             <div className="section-title" style={{ marginTop: 24 }}>
-              <h3>Меню та рецептури</h3>
+              <div>
+                <p className="eyebrow">Меню</p>
+                <h3>Меню та рецептури</h3>
+              </div>
               <button onClick={saveProduct}>Зберегти продукт</button>
             </div>
-            <div className="flex">
+            <div className="flex wrap">
               <input placeholder="Назва" value={productForm.name} onChange={(e) => setProductForm({ ...productForm, name: e.target.value })} />
               <input placeholder="Опис" value={productForm.description} onChange={(e) => setProductForm({ ...productForm, description: e.target.value })} />
               <input placeholder="Ціна" type="number" value={productForm.price} onChange={(e) => setProductForm({ ...productForm, price: e.target.value })} />
@@ -484,7 +528,7 @@ export default function App() {
                 ))}
               </select>
             </div>
-            <div className="flex" style={{ marginTop: 8 }}>
+            <div className="flex wrap" style={{ marginTop: 8 }}>
               <input placeholder="Нова категорія" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
               <button onClick={createNewCategory}>Додати категорію</button>
             </div>
@@ -507,8 +551,8 @@ export default function App() {
                     <td>{p.name}</td>
                     <td>{p.Category?.name}</td>
                     <td>{Number(p.price).toFixed(2)}</td>
-                    <td>{p.is_active ? 'Активний' : 'Вимкнений'}</td>
-                    <td className="flex">
+                    <td><span className={`pill ${p.is_active ? 'success' : 'warning'}`}>{p.is_active ? 'Активний' : 'Вимкнений'}</span></td>
+                    <td className="flex wrap">
                       <button onClick={() => toggleProduct(p)}>{p.is_active ? 'Вимкнути' : 'Увімкнути'}</button>
                       <button className="secondary" onClick={() => { loadRecipe(p.product_id); document.getElementById('recipe-box')?.scrollIntoView({ behavior: 'smooth' }); }}>Рецепт</button>
                     </td>
@@ -517,8 +561,9 @@ export default function App() {
               </tbody>
             </table>
 
-            <div className="card" id="recipe-box">
-              <h4>Рецептура</h4>
+            <div className="card shadow" id="recipe-box">
+              <p className="eyebrow">Рецептури</p>
+              <h4>Оберіть продукт</h4>
               <select value={recipeForm.productId} onChange={(e) => { const id = e.target.value; setRecipeForm({ ...recipeForm, productId: id }); loadRecipe(id); }}>
                 <option value="">Оберіть продукт</option>
                 {products.map((p) => (
@@ -535,14 +580,17 @@ export default function App() {
             </div>
 
             <div className="section-title" style={{ marginTop: 24 }}>
-              <h4>Звіт продажів</h4>
+              <div>
+                <p className="eyebrow">Фінанси</p>
+                <h4>Звіт продажів</h4>
+              </div>
               <select value={reportPeriod} onChange={(e) => setReportPeriod(e.target.value)}>
                 <option value="day">День</option>
                 <option value="week">Тиждень</option>
                 <option value="month">Місяць</option>
               </select>
             </div>
-            <p>Сума: {Number(report.total).toFixed(2)} грн</p>
+            <p className="total">Сума: {Number(report.total).toFixed(2)} грн</p>
             <table className="table">
               <thead>
                 <tr>
@@ -558,7 +606,7 @@ export default function App() {
                     <td>{o.order_id}</td>
                     <td>{Number(o.total_amount).toFixed(2)}</td>
                     <td>{o.payment_method}</td>
-                    <td>{o.status}</td>
+                    <td><span className={`pill ${o.status === 'Paid' ? 'success' : 'warning'}`}>{o.status}</span></td>
                   </tr>
                 ))}
               </tbody>
